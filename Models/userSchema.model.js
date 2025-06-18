@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["buyer", "seller"],
-      default: buyer,
+      default: "buyer",
     },
     resetPasswordToken: {
       type: String,

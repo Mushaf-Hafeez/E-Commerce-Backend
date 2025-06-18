@@ -7,8 +7,8 @@ const otpSchema = new mongoose.Schema({
     maxLength: 8,
   },
   email: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
+    required: true,
   },
   expiresIn: {
     type: Date,
