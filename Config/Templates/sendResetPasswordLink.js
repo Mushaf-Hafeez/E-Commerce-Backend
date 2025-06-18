@@ -1,12 +1,11 @@
 require("dotenv").config();
 
-const signupTemplate = (name) => {
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+const sendForgotPasswordLink = (name, token) => {
+  return `<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome!</title>
+    <title>Password Reset Request</title>
     <style type="text/css">
         /* Client-specific styles */
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
@@ -30,7 +29,7 @@ const signupTemplate = (name) => {
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: #333333;
-            background-color: #f7f7f7;
+            background-color: #ffffff;
         }
         
         .container {
@@ -39,8 +38,8 @@ const signupTemplate = (name) => {
         }
         
         .header {
-            background-color: #4CAF50;
-            padding: 40px 20px;
+            background-color: #ffc107;
+            padding: 30px 20px;
             text-align: center;
             color: #ffffff;
         }
@@ -51,7 +50,7 @@ const signupTemplate = (name) => {
         }
         
         .footer {
-            background-color: #f1f1f1;
+            background-color: #ffffff;
             padding: 20px;
             text-align: center;
             font-size: 12px;
@@ -59,25 +58,27 @@ const signupTemplate = (name) => {
         }
         
         .button {
-            background-color: #4CAF50;
+            background-color: #ffc107;
             color: #ffffff !important;
             display: inline-block;
             padding: 12px 25px;
             text-decoration: none;
             border-radius: 4px;
             font-weight: bold;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
-        .confetti-icon {
-            font-size: 48px;
-            color: #FFD700;
-            margin-bottom: 15px;
+        .security-note {
+            background-color: #ffffff;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            font-size: 14px;
+            margin: 20px 0;
         }
         
         h1 {
-            color: #4CAF50;
-            font-size: 28px;
+            color: #ffc107;
+            font-size: 24px;
             margin-top: 0;
         }
         
@@ -86,22 +87,10 @@ const signupTemplate = (name) => {
             margin-bottom: 20px;
         }
         
-        .features {
-            margin: 25px 0;
-        }
-        
-        .feature-item {
-            margin-bottom: 15px;
-            padding-left: 25px;
-            position: relative;
-        }
-        
-        .feature-item:before {
-            content: "✓";
-            color: #4CAF50;
-            position: absolute;
-            left: 0;
-            font-weight: bold;
+        .reset-link {
+            word-break: break-all;
+            color: #ffc107;
+            text-decoration: none;
         }
         
         @media screen and (max-width: 480px) {
@@ -111,9 +100,6 @@ const signupTemplate = (name) => {
             .header, .content, .footer {
                 padding-left: 15px !important;
                 padding-right: 15px !important;
-            }
-            .header {
-                padding: 30px 15px;
             }
         }
     </style>
@@ -127,41 +113,39 @@ const signupTemplate = (name) => {
                     <!-- Header -->
                     <tr>
                         <td class="header" align="center" valign="top">
-                            <div class="confetti-icon">🎉</div>
-                            <h1 style="color: #ffffff; margin-bottom: 10px;">Welcome to E-Com!</h1>
-                            <p style="color: #e8f5e9; margin-bottom: 0;">Your account has been successfully created</p>
+                            <h1 style="color: #ffffff; margin-bottom: 0;">Password Reset Request</h1>
                         </td>
                     </tr>
                     
                     <!-- Content -->
                     <tr>
                         <td class="content" align="left" valign="top">
-                            <p>Dear ${name},</p>
+                            <p>Hello ${name},</p>
                             
-                            <p>Congratulations and welcome! We're thrilled to have you as part of our community.</p>
-                            
-                            <p>Your account is now ready to use. Here's what you can do next:</p>
-                            
-                            <div class="features">
-                                <div class="feature-item">Complete your profile to personalize your experience</div>
-                                <div class="feature-item">Explore our features and services</div>
-                                <div class="feature-item">Connect with other community members</div>
-                                <div class="feature-item">Start achieving your goals with our platform</div>
-                            </div>
+                            <p>We received a request to reset your password for your E-Com account. If you didn't make this request, you can safely ignore this email.</p>
                             
                             <div align="center">
                                 <a href="${
                                   process.env.FRONTEND_URL
-                                }" class="button">Go to Your Dashboard</a>
+                                }/forgot-password/${token}" class="button">Reset Your Password</a>
                             </div>
                             
-                            <p>If you have any questions or need assistance, don't hesitate to contact our support team at <a href="mailto:${
+                            <p>Or copy and paste this link into your browser:</p>
+                            <p><a href="${
+                              process.env.FRONTEND_URL
+                            }/${token}" class="reset-link">${
+    process.env.FRONTEND_URL
+  }/forgot-password/${token}</a></p>
+                            
+                            <div class="security-note">
+                                <strong>Security tip:</strong> This link will expire in 5 minutes. For your security, never share this link with anyone. Our support team will never ask for this information.
+                            </div>
+                            
+                            <p>If you're having trouble with the button above, please contact our support team at <a href="mailto:${
                               process.env.MAIL_USER
                             }">${process.env.MAIL_USER}</a>.</p>
                             
-                            <p>Once again, welcome aboard!</p>
-                            
-                            <p>Best regards,<br/>
+                            <p>Thanks,<br/>
                             The E-Com Team</p>
                         </td>
                     </tr>
@@ -171,7 +155,7 @@ const signupTemplate = (name) => {
                         <td class="footer" align="center" valign="top">
                             <p>&copy; ${new Date().getFullYear()} E-Com. All rights reserved.</p>
                             <p>
-                                E-Com<br /> 
+                                E-Com<br />
                             </p>
                         </td>
                     </tr>
@@ -180,7 +164,8 @@ const signupTemplate = (name) => {
         </tr>
     </table>
 </body>
-</html>`;
+</html>
+`;
 };
 
-module.exports = signupTemplate;
+module.exports = sendForgotPasswordLink;
