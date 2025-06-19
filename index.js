@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const expressFileUpload = require("express-fileupload");
 require("dotenv").config();
 
 // importing routes
@@ -13,9 +14,19 @@ const port = process.env.PORT || 3000;
 const connectDB = require("./Config/database");
 connectDB();
 
+// clodudinary connection
+const connectCloudinary = require("./Config/cloudinary");
+connectCloudinary();
+
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  expressFileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
 
