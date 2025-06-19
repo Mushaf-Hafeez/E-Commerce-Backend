@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  naem: {
+  name: {
     type: String,
     required: true,
     maxLength: 25,
