@@ -5,6 +5,75 @@ const { isFileTypeSupported, uploadFile } = require("../Config/util");
 const { mongoose } = require("mongoose");
 require("dotenv").config();
 
+// get all products controller function
+exports.products = async (req, res) => {
+  try {
+    // get the products from the database
+    const products = await Product.find().populate("seller").exec();
+
+    if (!products) {
+      return res.status(400).json({
+        success: false,
+        message: "Error while fetching the products from the database",
+      });
+    }
+
+    // return the success response
+    return res.status(200).json({
+      success: true,
+      products,
+      message: "Products fetched successfully",
+    });
+  } catch (error) {
+    console.log("Error in the products controller function: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// my products controller function
+exports.myProducts = async (req, res) => {
+  try {
+    // get the user id
+    const id = req.user.id;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "ID is missing",
+      });
+    }
+
+    // fetch the user products
+    const myProducts = await Product.find({ seller: id });
+
+    if (!myProducts) {
+      return res.status(400).json({
+        success: false,
+        message: "Error while fetching the products from the database",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      myProducts,
+      message: "Products has been fetched successfully",
+    });
+  } catch (error) {
+    console.log(
+      "Error in the my products controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// add product controller function
 exports.addProduct = async (req, res) => {
   try {
     const seller = req.user.id;
