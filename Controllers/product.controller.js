@@ -41,14 +41,14 @@ exports.addProduct = async (req, res) => {
     }
 
     // create the product in the database
-    const product = await Product.create(
-      seller,
+    const product = await Product.create({
       name,
       description,
       productImages,
       category,
-      price
-    );
+      price,
+      seller,
+    });
 
     if (!product) {
       return res.status(201).json({
@@ -74,6 +74,46 @@ exports.addProduct = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+    });
+  }
+};
+
+// change stock controller function
+exports.updateStock = async (req, res) => {
+  try {
+    const { inStock } = req.body;
+    const productId = req.params.id;
+
+    // validation
+    if (!productId || !inStock) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all the details",
+      });
+    }
+
+    // change the stock of the product in the database
+    const product = await Product.findByIdAndUpdate(productId, { inStock });
+    if (!product) {
+      return res.status(201).json({
+        success: false,
+        message: "Error while changing the stock",
+      });
+    }
+
+    // return the success respone
+    return res.status(200).json({
+      success: true,
+      message: "Stock has been updated successfully",
+    });
+  } catch (error) {
+    console.log(
+      "Error in the change stock controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
     });
   }
 };

@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  seller: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
   name: {
     type: String,
     required: true,
@@ -38,6 +34,10 @@ const productSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+  },
+  seller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
