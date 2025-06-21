@@ -6,6 +6,7 @@ require("dotenv").config();
 // importing routes
 const authRouter = require("./Routes/auth.route");
 const productRouter = require("./Routes/product.route");
+const profileRouter = require("./Routes/profile.route");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use(
 );
 app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
+app.use("/api/profile", profileRouter);
 
 // default route
 app.get("/", (req, res) => {
