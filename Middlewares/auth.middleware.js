@@ -23,7 +23,7 @@ exports.isAuth = async (req, res, next) => {
       };
     } catch (error) {
       console.log("Error while verifying the token: ", error.message);
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Internal server error",
       });
@@ -42,7 +42,7 @@ exports.isAuth = async (req, res, next) => {
 exports.isSeller = async (req, res, next) => {
   try {
     if (req.user.role !== "buyer") {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "This is a protected route only for the sellers",
       });
