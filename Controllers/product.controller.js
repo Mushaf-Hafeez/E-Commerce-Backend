@@ -73,7 +73,6 @@ exports.myProducts = async (req, res) => {
   }
 };
 
-// add product controller function
 exports.addProduct = async (req, res) => {
   try {
     const seller = req.user.id;
@@ -81,23 +80,27 @@ exports.addProduct = async (req, res) => {
     const images = req.files.images;
 
     // validation
-    if (
-      !name ||
-      !description ||
-      !category ||
-      !price ||
-      !images ||
-      images.length === 0
-    ) {
+    if (!name || !description || !category || !price || !images) {
       return res.status(400).json({
         success: false,
         message: "Please provide all the details",
       });
     }
 
+    // Normalize images to always be an array
+    const imageArray = Array.isArray(images) ? images : [images];
+
+    // Check if we have any images
+    if (imageArray.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide at least one image",
+      });
+    }
+
     const productImages = [];
 
-    for (const image of images) {
+    for (const image of imageArray) {
       if (!isFileTypeSupported(path.extname(image.name))) {
         return res.status(400).json({
           success: false,

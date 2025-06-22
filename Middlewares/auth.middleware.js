@@ -41,7 +41,7 @@ exports.isAuth = async (req, res, next) => {
 
 exports.isSeller = async (req, res, next) => {
   try {
-    if (req.user.role !== "buyer") {
+    if (req.user.role !== "seller") {
       return res.status(401).json({
         success: false,
         message: "This is a protected route only for the sellers",

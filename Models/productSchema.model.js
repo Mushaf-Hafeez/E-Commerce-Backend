@@ -4,13 +4,13 @@ const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    maxLength: 25,
+    maxLength: 50,
     trim: true,
   },
   description: {
     type: String,
     required: true,
-    maxLength: 50,
+    maxLength: 100,
     trim: true,
   },
   productImages: [
