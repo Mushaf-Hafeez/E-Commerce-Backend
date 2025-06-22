@@ -8,12 +8,17 @@ const {
   sendOTP,
   sendForgotPasswordLink,
   forgotPassword,
+  chechAuth,
+  logout,
 } = require("../Controllers/auth.controller");
+const { isAuth } = require("../Middlewares/auth.middleware");
 
 authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 authRouter.post("/send-otp", sendOTP);
 authRouter.post("/sendForgotPasswordLink", sendForgotPasswordLink);
 authRouter.post("/forgotPassword/:token", forgotPassword);
+authRouter.get("/checkAuth", isAuth, chechAuth);
+authRouter.get("/logout", isAuth, logout);
 
 module.exports = authRouter;

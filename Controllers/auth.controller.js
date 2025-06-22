@@ -307,3 +307,37 @@ exports.forgotPassword = async (req, res) => {
     });
   }
 };
+
+// check auth controller function
+exports.chechAuth = async (req, res) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      message: "User authenticated",
+    });
+  } catch (error) {
+    console.log("Error in the check auth controller function: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// logout controller function
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    console.log("Error in the logout controller function: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

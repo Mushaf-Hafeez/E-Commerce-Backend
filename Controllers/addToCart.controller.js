@@ -57,3 +57,58 @@ exports.addToCart = async (req, res) => {
     });
   }
 };
+
+// controller function to remove or delete the product from the cart
+exports.removeFromCart = async (req, res) => {
+  try {
+    const buyer = req.user.id;
+    const productId = req.params.id;
+
+    // validation
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is missing",
+      });
+    }
+
+    // fetch the price of the product from the datbase
+    const { price } = await Product.findById(productId).select("price");
+
+    const cartItem = await CartItem.findOne({ productId, buyer });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        success: false,
+        message: "No product found",
+      });
+    }
+
+    if (cartItem.quantity === 1) {
+      await CartItem.findByIdAndDelete(cartItem._id);
+      await User.findByIdAndUpdate(buyer, {
+        $pull: { addToCart: cartItem._id },
+      });
+    } else {
+      cartItem.quantity -= 1;
+      cartItem.amount -= price;
+
+      await cartItem.save();
+    }
+
+    // return the success response
+    return res.status(200).json({
+      success: true,
+      message: "Item removed successfully",
+    });
+  } catch (error) {
+    console.log(
+      "Error in the remove product controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
