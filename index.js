@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const expressFileUpload = require("express-fileupload");
+const cors = require("cors");
 require("dotenv").config();
 
 // importing routes
@@ -22,6 +23,13 @@ connectCloudinary();
 
 // middlewares
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(
   expressFileUpload({
