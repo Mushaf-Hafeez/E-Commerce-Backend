@@ -135,7 +135,7 @@ const sendForgotPasswordLink = (name, token) => {
                               process.env.FRONTEND_URL
                             }/${token}" class="reset-link">${
     process.env.FRONTEND_URL
-  }/forgot-password/${token}</a></p>
+  }/reset-password/${token}</a></p>
                             
                             <div class="security-note">
                                 <strong>Security tip:</strong> This link will expire in 5 minutes. For your security, never share this link with anyone. Our support team will never ask for this information.
