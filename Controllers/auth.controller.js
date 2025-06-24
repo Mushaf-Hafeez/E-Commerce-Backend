@@ -22,6 +22,15 @@ exports.sendOTP = async (req, res) => {
       });
     }
 
+    // find user with this email
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists.",
+      });
+    }
+
     let otp = generateOTP();
 
     // create the OTP
