@@ -7,7 +7,7 @@ const {
   login,
   sendOTP,
   sendForgotPasswordLink,
-  forgotPassword,
+  resetPassword,
   chechAuth,
   logout,
 } = require("../Controllers/auth.controller");
@@ -17,7 +17,7 @@ authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 authRouter.post("/send-otp", sendOTP);
 authRouter.post("/sendForgotPasswordLink", sendForgotPasswordLink);
-authRouter.post("/forgotPassword/:token", forgotPassword);
+authRouter.post("/resetPassword/:token", resetPassword);
 authRouter.get("/checkAuth", isAuth, chechAuth);
 authRouter.get("/logout", isAuth, logout);
 

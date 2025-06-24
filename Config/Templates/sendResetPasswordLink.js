@@ -127,7 +127,7 @@ const sendForgotPasswordLink = (name, token) => {
                             <div align="center">
                                 <a href="${
                                   process.env.FRONTEND_URL
-                                }/forgot-password/${token}" class="button">Reset Your Password</a>
+                                }/reset-password/${token}" class="button">Reset Your Password</a>
                             </div>
                             
                             <p>Or copy and paste this link into your browser:</p>

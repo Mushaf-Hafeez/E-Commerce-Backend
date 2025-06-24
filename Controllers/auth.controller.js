@@ -274,7 +274,7 @@ exports.sendForgotPasswordLink = async (req, res) => {
 };
 
 // forgot password controller function
-exports.forgotPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
   try {
     const token = req.params.token;
     const { password, confirmPassword } = req.body;
