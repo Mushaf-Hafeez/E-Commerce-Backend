@@ -144,8 +144,13 @@ exports.signup = async (req, res) => {
       signupTemplate(user.name, new Date().getFullYear())
     );
 
+    // delete the password from the user
+    user = user.toObject();
+    delete user.password;
+
     return res.status(200).json({
       success: true,
+      user,
       message: "Signup successful",
     });
   } catch (error) {
@@ -170,7 +175,7 @@ exports.login = async (req, res) => {
     }
 
     // check if the user exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).lean();
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -196,8 +201,12 @@ exports.login = async (req, res) => {
       });
     }
 
+    // delete the password from the user object
+    delete user.password;
+
     return res.status(200).json({
       success: true,
+      user,
       message: "Login successful",
     });
   } catch (error) {
