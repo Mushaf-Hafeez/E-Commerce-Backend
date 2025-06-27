@@ -19,6 +19,6 @@ authRouter.post("/send-otp", sendOTP);
 authRouter.post("/sendForgotPasswordLink", sendForgotPasswordLink);
 authRouter.post("/resetPassword/:token", resetPassword);
 authRouter.get("/checkAuth", isAuth, chechAuth);
-authRouter.get("/logout", isAuth, logout);
+authRouter.get("/logout", logout);
 
 module.exports = authRouter;
