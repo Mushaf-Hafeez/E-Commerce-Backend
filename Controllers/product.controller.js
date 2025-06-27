@@ -136,6 +136,7 @@ exports.addProduct = async (req, res) => {
     // return the success response
     return res.status(200).json({
       success: true,
+      product,
       message: "product has been added successfully",
     });
   } catch (error) {
