@@ -12,6 +12,6 @@ const {
 productRouter.get("/products", products);
 productRouter.get("/myProducts", isAuth, isSeller, myProducts);
 productRouter.post("/addProduct", isAuth, isSeller, addProduct);
-productRouter.post("/updateStock/:id", isAuth, isSeller, updateStock);
+productRouter.put("/updateStock/:id", isAuth, isSeller, updateStock);
 
 module.exports = productRouter;

@@ -154,19 +154,21 @@ exports.addProduct = async (req, res) => {
 // change stock controller function
 exports.updateStock = async (req, res) => {
   try {
-    const { inStock } = req.body;
     const productId = req.params.id;
 
     // validation
-    if (!productId || !inStock) {
+    if (!productId) {
       return res.status(400).json({
         success: false,
-        message: "Please provide all the details",
+        message: "Product Id is missing",
       });
     }
 
     // change the stock of the product in the database
-    const product = await Product.findByIdAndUpdate(productId, { inStock });
+    const product = await Product.findByIdAndUpdate(productId, [
+      { $set: { inStock: { $not: "$inStock" } } },
+    ]);
+
     if (!product) {
       return res.status(201).json({
         success: false,
