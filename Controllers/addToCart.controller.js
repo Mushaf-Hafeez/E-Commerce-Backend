@@ -20,9 +20,7 @@ exports.addToCart = async (req, res) => {
     const { price } = await Product.findById(productId).select("price");
 
     // find the cart item with this user id and product id
-    const cartItem = await CartItem.findOne({ productId, buyer })
-      .populate("productId")
-      .exec();
+    const cartItem = await CartItem.findOne({ productId, buyer });
 
     // if no item found then create it
     if (!cartItem) {
@@ -31,7 +29,6 @@ exports.addToCart = async (req, res) => {
         buyer,
         amount: price,
       });
-      response = await CartItem.findById(response._id).populate("productId");
       await User.findByIdAndUpdate(buyer, {
         $push: { addToCart: response._id },
       });
@@ -80,9 +77,7 @@ exports.removeFromCart = async (req, res) => {
     // fetch the price of the product from the datbase
     const { price } = await Product.findById(productId).select("price");
 
-    const cartItem = await CartItem.findOne({ productId, buyer }).populate(
-      "productId"
-    );
+    const cartItem = await CartItem.findOne({ productId, buyer });
 
     if (!cartItem) {
       return res.status(404).json({
@@ -106,7 +101,6 @@ exports.removeFromCart = async (req, res) => {
     // return the success response
     return res.status(200).json({
       success: true,
-      cartItem,
       message: "Item removed successfully",
     });
   } catch (error) {
