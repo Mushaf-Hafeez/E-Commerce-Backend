@@ -20,21 +20,25 @@ exports.addToCart = async (req, res) => {
     const { price } = await Product.findById(productId).select("price");
 
     // find the cart item with this user id and product id
-    const cartItem = await CartItem.findOne({ productId, buyer });
+    const cartItem = await CartItem.findOne({ productId, buyer })
+      .populate("productId")
+      .exec();
 
     // if no item found then create it
     if (!cartItem) {
-      const response = await CartItem.create({
+      let response = await CartItem.create({
         productId,
         buyer,
         amount: price,
       });
+      response = await CartItem.findById(response._id).populate("productId");
       await User.findByIdAndUpdate(buyer, {
         $push: { addToCart: response._id },
       });
 
       return res.status(200).json({
         success: true,
+        cartItem: response,
         message: "Cart item created successfully",
       });
     } else {
@@ -43,6 +47,7 @@ exports.addToCart = async (req, res) => {
       await cartItem.save();
       return res.status(200).json({
         success: true,
+        cartItem,
         message: "Cart updated successfully",
       });
     }
