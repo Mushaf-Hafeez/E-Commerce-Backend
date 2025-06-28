@@ -80,7 +80,9 @@ exports.removeFromCart = async (req, res) => {
     // fetch the price of the product from the datbase
     const { price } = await Product.findById(productId).select("price");
 
-    const cartItem = await CartItem.findOne({ productId, buyer });
+    const cartItem = await CartItem.findOne({ productId, buyer }).populate(
+      "productId"
+    );
 
     if (!cartItem) {
       return res.status(404).json({
@@ -104,6 +106,7 @@ exports.removeFromCart = async (req, res) => {
     // return the success response
     return res.status(200).json({
       success: true,
+      cartItem,
       message: "Item removed successfully",
     });
   } catch (error) {
