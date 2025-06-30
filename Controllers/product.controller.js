@@ -33,6 +33,49 @@ exports.products = async (req, res) => {
   }
 };
 
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    // validation
+    if (
+      !category ||
+      !["mouse", "keyboard", "mousepad"].find((item) => item === category)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is missing/invalid",
+      });
+    }
+
+    // find the products from the database
+    const products = await Product.find({ category });
+
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        messsage: "No product found",
+      });
+    }
+
+    // send the success response
+    return res.status(200).json({
+      success: true,
+      products,
+      message: "Products fetched successfully",
+    });
+  } catch (error) {
+    console.log(
+      "Error in the get products by category controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 // my products controller function
 exports.myProducts = async (req, res) => {
   try {
