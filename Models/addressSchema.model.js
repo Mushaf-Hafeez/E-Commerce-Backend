@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
-  houseNo: {
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  email: {
     type: String,
     required: true,
   },
@@ -22,6 +30,10 @@ const addressSchema = new mongoose.Schema({
     required: true,
   },
   postalCode: {
+    type: Number,
+    required: true,
+  },
+  phoneNumber: {
     type: Number,
     required: true,
   },
