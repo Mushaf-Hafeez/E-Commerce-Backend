@@ -9,6 +9,7 @@ const authRouter = require("./Routes/auth.route");
 const productRouter = require("./Routes/product.route");
 const profileRouter = require("./Routes/profile.route");
 const addToCartRouter = require("./Routes/addToCart.route");
+const orderRouter = require("./Routes/order.route");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -41,6 +42,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/addToCart", addToCartRouter);
+app.use("/api/order", orderRouter);
 
 // default route
 app.get("/", (req, res) => {

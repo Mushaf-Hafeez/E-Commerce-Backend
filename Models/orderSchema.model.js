@@ -20,7 +20,6 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["paid", "unpaid"],
   },
 });
 
