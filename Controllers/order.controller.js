@@ -1,11 +1,76 @@
 const Order = require("../Models/orderSchema.model");
+const Address = require("../Models/addressSchema.model");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // place order controller function
 exports.placeOrder = async (req, res) => {
   try {
-    const { cartlist, address } = req.body;
+    const { cartlist } = req.body;
+    const userId = req.user.id;
+    const {
+      firstName,
+      lastName,
+      email,
+      street,
+      city,
+      postalCode,
+      province,
+      country,
+      phoneNumber,
+    } = req.body?.address;
+
+    // validation
+    if (
+      firstName ||
+      lastName ||
+      email ||
+      street ||
+      city ||
+      postalCode ||
+      province ||
+      country ||
+      phoneNumber
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All the fields are required",
+      });
+    }
+
+    // validation on cartlist
+    if (!cartlist || !cartlist.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart is empty",
+      });
+    }
+
+    // create the address
+    const address = await Address.create({
+      firstName,
+      lastName,
+      email,
+      street,
+      city,
+      postalCode,
+      province,
+      country,
+      phoneNumber,
+    });
+
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        message: "Error while creating the address",
+      });
+    }
+
+    const cartItemIds = [];
+
+    cartlist.forEach((item) => cartItemIds.push(item._id));
+
+    // Todo: create the order
 
     const line_items = [];
     cartlist.forEach((item) => {
@@ -28,6 +93,8 @@ exports.placeOrder = async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/payment/success`,
       cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
     });
+
+    console.log("session is: ", session);
 
     return res.json({
       url: session.url,
