@@ -10,6 +10,7 @@ const productRouter = require("./Routes/product.route");
 const profileRouter = require("./Routes/profile.route");
 const addToCartRouter = require("./Routes/addToCart.route");
 const orderRouter = require("./Routes/order.route");
+const webhookRouter = require("./Routes/webhook.route");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +22,9 @@ connectDB();
 // clodudinary connection
 const connectCloudinary = require("./Config/cloudinary");
 connectCloudinary();
+
+// webhook
+app.use("/api", webhookRouter);
 
 // middlewares
 app.use(express.json());

@@ -1,11 +1,8 @@
-const Order = require("../Models/orderSchema.model");
-const Address = require("../Models/addressSchema.model");
-const User = require("../Models/userSchema.model");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-// place order controller function
-exports.placeOrder = async (req, res) => {
+// checkout controller function
+exports.checkout = async (req, res) => {
   try {
     const { cartlist } = req.body;
     const userId = req.user.id;
@@ -47,54 +44,9 @@ exports.placeOrder = async (req, res) => {
       });
     }
 
-    // create the address
-    const address = await Address.create({
-      firstName,
-      lastName,
-      email,
-      street,
-      city,
-      postalCode,
-      province,
-      country,
-      phoneNumber,
-    });
-
-    if (!address) {
-      return res.status(400).json({
-        success: false,
-        message: "Error while creating the address",
-      });
-    }
-
-    const amount = cartlist.reduce((acc, item) => acc + item.amount, 0);
-    const items = [];
-
-    cartlist.forEach((item) => items.push(item._id));
-
-    // Todo: create the order
-    const order = await Order.create({
-      user: userId,
-      items,
-      address: address._id,
-      amount,
-      status: "unpaid",
-    });
-
-    if (!order) {
-      return res.status(500).json({
-        success: false,
-        message: "Error while creating the order",
-      });
-    }
-
-    const user = await User.findById(userId);
-    user.myOrders.push(order._id);
-    user.addToCart = [];
-    await user.save();
-
     const line_items = [];
-    cartlist.forEach((item) => {
+
+    cartlist.forEach((item) =>
       line_items.push({
         price_data: {
           currency: "pkr",
@@ -104,18 +56,27 @@ exports.placeOrder = async (req, res) => {
           unit_amount: item.productId.price * 100,
         },
         quantity: item.quantity,
-      });
-    });
+      })
+    );
+
+    const minimalCart = cartlist.map((item) => ({
+      productId: item.productId._id,
+      quantity: item.quantity,
+      price: item.productId.price,
+    }));
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,
+      metadata: {
+        userId,
+        address: JSON.stringify(req.body.address),
+        cartlist: JSON.stringify(minimalCart),
+      },
       mode: "payment",
       success_url: `${process.env.FRONTEND_URL}/payment/success`,
       cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
     });
-
-    // console.log("session is: ", session);
 
     return res.status(200).json({
       success: true,
@@ -123,10 +84,7 @@ exports.placeOrder = async (req, res) => {
       message: "Order created",
     });
   } catch (error) {
-    console.log(
-      "Error in the place order controller function: ",
-      error.message
-    );
+    console.log("Error in the checkout controller function: ", error.message);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
