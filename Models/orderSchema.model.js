@@ -21,6 +21,10 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
   },
+  sessionId: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);
