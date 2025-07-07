@@ -49,9 +49,7 @@ exports.webhook = async (req, res) => {
     const items = [];
     const amount = session.amount_total / 100;
 
-    cartlist.forEach((item) => {
-      items.push(item._id);
-    });
+    cartlist.forEach((item) => items.push(item.productId));
 
     const order = await Order.create({
       user: userId,
