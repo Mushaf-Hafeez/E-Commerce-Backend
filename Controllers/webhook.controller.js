@@ -3,6 +3,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Order = require("../Models/orderSchema.model");
 const Address = require("../Models/addressSchema.model");
 const User = require("../Models/userSchema.model");
+const CartItem = require("../Models/cartItemSchema.model");
 
 // webhook controller
 exports.webhook = async (req, res) => {
@@ -70,6 +71,9 @@ exports.webhook = async (req, res) => {
 
     user.addToCart = [];
     await user.save();
+
+    // delete  all the cartitems of this user
+    await CartItem.deleteMany({ buyer: userId });
   }
 
   return res.status(200).json({

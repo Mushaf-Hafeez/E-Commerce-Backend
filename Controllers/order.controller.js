@@ -91,3 +91,50 @@ exports.checkout = async (req, res) => {
     });
   }
 };
+
+// check payment status
+exports.checkStatus = async (req, res) => {
+  try {
+    // get the session id
+    const { sessionId } = req.params;
+
+    if (!sessionId) {
+      return res.status(404).json({
+        success: false,
+        message: "Session ID not found",
+      });
+    }
+
+    // retrieve the session from stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: "Not session found",
+      });
+    }
+
+    // return the success response if paid
+    if (session.payment_status === "paid") {
+      return res.status(200).json({
+        success: true,
+        message: "session completed",
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "session not completed",
+      });
+    }
+  } catch (error) {
+    console.log(
+      "Error in the check status controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
