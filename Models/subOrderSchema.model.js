@@ -25,6 +25,10 @@ const subOrderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  payment_status: {
+    type: ["paid", "unpaid"],
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("SubOrder", subOrderSchema);
