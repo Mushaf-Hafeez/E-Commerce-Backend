@@ -32,8 +32,8 @@ exports.webhook = async (req, res) => {
     const cartlist = JSON.parse(session.metadata.cartlist);
     const address = JSON.parse(session.metadata.address);
 
-    console.log("userId: ", userId);
-    console.log("cartlist: ", cartlist);
+    // console.log("userId: ", userId);
+    // console.log("cartlist: ", cartlist);
     // console.log(address);
 
     // Todo: 1. create address ✅
@@ -63,7 +63,7 @@ exports.webhook = async (req, res) => {
 
     const subOrders = [];
 
-    cartlist.forEach(async (item) => {
+    for (const item of cartlist) {
       const product = await Product.findById(item.productId);
       const subOrder = await SubOrder.create({
         seller: product.seller,
@@ -77,7 +77,7 @@ exports.webhook = async (req, res) => {
         $push: { receivedOrders: subOrder._id },
       });
       subOrders.push(subOrder._id);
-    });
+    }
 
     // Todo: 6. push the mainORder id in user -> myOrders ✅
     order.subOrders = subOrders;
