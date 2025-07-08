@@ -50,6 +50,7 @@ const userSchema = new mongoose.Schema(
         ref: "Order",
       },
     ],
+    receivedOrders: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubOrder" }],
   },
   { timestamps: true }
 );

@@ -10,6 +10,12 @@ const orderSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  subOrders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubOrder",
+    },
+  ],
   address: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
