@@ -70,8 +70,9 @@ exports.webhook = async (req, res) => {
         address: orderAddress._id,
         mainOrder: order._id,
         product: product._id,
-        amount: product.price,
+        amount: product.price * item.quantity,
         quantity: item.quantity,
+        payment_status: "paid",
       });
       await User.findByIdAndUpdate(product.seller, {
         $push: { receivedOrders: subOrder._id },
