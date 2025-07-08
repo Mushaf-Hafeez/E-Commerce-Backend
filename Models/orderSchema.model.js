@@ -24,8 +24,9 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  status: {
-    type: String,
+  payment_status: {
+    type: ["paid", "unpaid"],
+    required: true,
   },
   sessionId: {
     type: String,

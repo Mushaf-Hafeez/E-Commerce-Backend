@@ -5,6 +5,7 @@ const SubOrder = require("../Models/subOrderSchema.model");
 const Address = require("../Models/addressSchema.model");
 const User = require("../Models/userSchema.model");
 const CartItem = require("../Models/cartItemSchema.model");
+const Product = require("../Models/productSchema.model");
 
 // webhook controller
 exports.webhook = async (req, res) => {
@@ -35,55 +36,68 @@ exports.webhook = async (req, res) => {
     console.log("cartlist: ", cartlist);
     // console.log(address);
 
-    // Todo: 1. create address
-    // Todo: 2. create main order
-    // Todo: 3. loop through cartlist and find the product with the product id
-    // Todo: 4. create suborder with product seller id, mainOrder id, prduct id, amount, quantity and payment status
-    // Todo: 5. in each iteration add the subOrder id in the mainOrder -> subOrders and in the seller -> receivedOrders
-    // Todo: 6. push the mainORder id in user -> myOrders
-    // Todo: 7. empty user's addToCart
-    // Todo: 8. delete all the cartItems
+    // Todo: 1. create address ✅
 
     // create address
-    // const orderAddress = await Address.create({
-    //   firstName: address.firstName,
-    //   lastName: address.lastName,
-    //   email: address.email,
-    //   street: address.street,
-    //   city: address.city,
-    //   postalCode: address.postalCode,
-    //   province: address.province,
-    //   country: address.country,
-    //   phoneNumber: address.phoneNumber,
-    // });
+    const orderAddress = await Address.create(address);
 
-    // const items = [];
-    // const amount = session.amount_total / 100;
+    // Todo: 2. create main order ✅
 
-    // cartlist.forEach((item) => items.push(item.productId));
+    const items = [];
+    const amount = session.amount_total / 100;
 
-    // const order = await Order.create({
-    //   user: userId,
-    //   items,
-    //   address: orderAddress._id,
-    //   amount,
-    //   status: "paid",
-    //   sessionId: session.id,
-    // });
+    cartlist.forEach((item) => items.push(item.productId));
 
-    // const user = await User.findByIdAndUpdate(
-    //   userId,
-    //   {
-    //     $push: { myOrders: order._id },
-    //   },
-    //   { new: true }
-    // );
+    const order = await Order.create({
+      user: userId,
+      items,
+      address: orderAddress._id,
+      amount,
+      payment_status: "paid",
+      sessionId: session.id,
+    });
 
-    // user.addToCart = [];
-    // await user.save();
+    // Todo: 3. loop through cartlist and find the product with the product id
+    // Todo: 4. create suborder with product seller id, mainOrder id, prduct id, amount, quantity and payment status ✅
+    // Todo: 5. in each iteration add the subOrder id in the mainOrder -> subOrders and in the seller -> receivedOrders ✅
 
+    const subOrders = [];
+
+    cartlist.forEach(async (item) => {
+      const product = await Product.findById(item.productId);
+      const subOrder = await SubOrder.create({
+        seller: product.seller,
+        address: orderAddress._id,
+        mainOrder: order._id,
+        product: product._id,
+        amount: product.price,
+        quantity: item.quantity,
+      });
+      await User.findByIdAndUpdate(product.seller, {
+        $push: { receivedOrders: subOrder._id },
+      });
+      subOrders.push(subOrder._id);
+    });
+
+    // Todo: 6. push the mainORder id in user -> myOrders ✅
+    order.subOrders = subOrders;
+    await order.save();
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { myOrders: order._id },
+      },
+      { new: true }
+    );
+
+    // Todo: 7. empty user's addToCart ✅
+    user.addToCart = [];
+    await user.save();
+
+    // Todo: 8. delete all the cartItems ✅
     // delete  all the cartitems of this user
-    // await CartItem.deleteMany({ buyer: userId });
+    await CartItem.deleteMany({ buyer: userId });
   }
 
   return res.status(200).json({
