@@ -11,7 +11,7 @@ const {
   updateStock,
 } = require("../Controllers/product.controller");
 
-productRouter.get("/:id", product);
+productRouter.get("/product-details/:id", product);
 productRouter.get("/products", products);
 productRouter.get("/products/:category", getProductsByCategory);
 productRouter.get("/myProducts", isAuth, isSeller, myProducts);
