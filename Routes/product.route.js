@@ -3,6 +3,7 @@ const productRouter = express.Router();
 
 const { isAuth, isSeller } = require("../Middlewares/auth.middleware");
 const {
+  product,
   products,
   getProductsByCategory,
   myProducts,
@@ -10,6 +11,7 @@ const {
   updateStock,
 } = require("../Controllers/product.controller");
 
+productRouter.get("/:id", product);
 productRouter.get("/products", products);
 productRouter.get("/products/:category", getProductsByCategory);
 productRouter.get("/myProducts", isAuth, isSeller, myProducts);

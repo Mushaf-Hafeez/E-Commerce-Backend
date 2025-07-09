@@ -33,6 +33,44 @@ exports.products = async (req, res) => {
   }
 };
 
+// get single product controller function
+exports.product = async (req, res) => {
+  try {
+    // get the product id from params
+    const productId = req.params.id;
+
+    // validation
+    if (!productId) {
+      return res.status(404).json({
+        success: false,
+        message: "Product Id is missing",
+      });
+    }
+
+    // find product in the database
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "No product found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      product,
+      message: "Proudct found",
+    });
+  } catch (error) {
+    console.log("Error in the product controlller function: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 exports.getProductsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
