@@ -2,7 +2,7 @@ const otpGenerator = require("otp-generator");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 
-const isDevelopment = process.env.NODE_ENV === "developement";
+const isDevelopment = process.env.NODE_ENV === "development";
 
 exports.createCookie = (token, res) => {
   res.cookie("token", token, {
