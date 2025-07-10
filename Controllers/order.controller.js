@@ -212,8 +212,6 @@ exports.receivedOrders = async (req, res) => {
         ],
       });
 
-    console.log(receivedOrders);
-
     return res.status(200).json({
       success: true,
       receivedOrders,
