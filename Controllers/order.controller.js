@@ -1,3 +1,8 @@
+const User = require("../Models/userSchema.model");
+const Order = require("../Models/orderSchema.model");
+const SubOrder = require("../Models/subOrderSchema.model");
+const Address = require("../Models/addressSchema.model");
+const Product = require("../Models/productSchema.model");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -130,6 +135,93 @@ exports.checkStatus = async (req, res) => {
   } catch (error) {
     console.log(
       "Error in the check status controller function: ",
+      error.message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.myOrders = async (req, res) => {
+  try {
+    // get the user id
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        message: "User ID not found",
+      });
+    }
+
+    // find orders from the database
+    const { myOrders } = await User.findById(userId)
+      .select("myOrders")
+      .populate({
+        path: "myOrders",
+        model: Order,
+        populate: {
+          path: "subOrders",
+          model: SubOrder,
+          populate: [
+            { path: "address", model: "Address" },
+            { path: "product", model: "Product" },
+          ],
+        },
+      });
+
+    // return the response
+    return res.status(200).json({
+      success: true,
+      myOrders,
+      message: "Orders fetched",
+    });
+  } catch (error) {
+    console.log("Error in my orders controller function: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// get received orders controller function
+exports.receivedOrders = async (req, res) => {
+  try {
+    // get the user Id
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        message: "Not user ID found",
+      });
+    }
+
+    // find the orders form the database
+    const { receivedOrders } = await User.findById(userId)
+      .select("receivedOrders")
+      .populate({
+        path: "receivedOrders",
+        model: "SubOrder",
+        populate: [
+          { path: "address", model: "Address" },
+          { path: "product", model: "Product" },
+        ],
+      });
+
+    console.log(receivedOrders);
+
+    return res.status(200).json({
+      success: true,
+      receivedOrders,
+      message: "Received orders fetched",
+    });
+  } catch (error) {
+    console.log(
+      "Error in received orders controller function: ",
       error.message
     );
     return res.status(500).json({
