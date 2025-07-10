@@ -7,8 +7,8 @@ const isDevelopment = process.env.NODE_ENV === "development";
 exports.createCookie = (token, res) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: isDevelopment ? false : true,
-    sameSite: isDevelopment ? "lax" : "strict",
+    secure: true,
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
