@@ -24,7 +24,11 @@ const connectCloudinary = require("./Config/cloudinary");
 connectCloudinary();
 
 // webhook
-app.use("/api", webhookRouter);
+app.use(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+  webhookRouter,
+);
 
 // middlewares
 app.use(express.json());
@@ -47,7 +51,6 @@ app.use("/api/product", productRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/addToCart", addToCartRouter);
 app.use("/api/order", orderRouter);
-app.use("/api/", webhookRouter);
 
 // default route
 app.get("/", (req, res) => {
