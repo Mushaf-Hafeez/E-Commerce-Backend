@@ -6,7 +6,7 @@ const { webhook } = require("../Controllers/webhook.controller");
 webhookRouter.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  webhook
+  webhook,
 );
 
 module.exports = webhookRouter;

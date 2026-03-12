@@ -33,20 +33,21 @@ app.use(
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 app.use(cookieParser());
 app.use(
   expressFileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
-  })
+  }),
 );
 app.use("/api/auth", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/addToCart", addToCartRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/", webhookRouter);
 
 // default route
 app.get("/", (req, res) => {
